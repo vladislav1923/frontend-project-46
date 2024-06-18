@@ -2,6 +2,7 @@ import { cwd } from 'node:process';
 import { isAbsolute, resolve } from 'node:path';
 import { readFileSync } from 'node:fs';
 import _ from 'lodash';
+import { yamlParser, jsonParser } from './parcers.js';
 
 class File {
   name;
@@ -26,7 +27,11 @@ class File {
     const file = readFileSync(this.name, 'utf-8');
     switch (this.format) {
       case 'json':
-        this.file = JSON.parse(file);
+        this.file = jsonParser(file);
+        break;
+      case 'yml':
+      case 'yaml':
+        this.file = yamlParser(file);
         break;
       default:
         throw new Error(`Unsupported file format: ${this.format}`);
