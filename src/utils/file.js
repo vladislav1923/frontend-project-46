@@ -5,18 +5,89 @@ import _ from 'lodash';
 import { yamlParser, jsonParser } from './parcers.js';
 
 class File {
-  name;
-
-  format;
-
-  file;
-
-  fieldStatuses = {
+  static fieldStatuses = {
     added: 'added',
     removed: 'removed',
     unchanged: 'unchanged',
     changed: 'changed',
   };
+
+  static compare(file1, file2) {
+    const fields = [];
+
+    Object.keys(file1).forEach((key) => {
+      if (file2[key] === undefined) {
+        fields.push({
+          key,
+          value: typeof file1[key] === 'object'
+            ? File.compare(file1[key], file1[key]) : file1[key],
+          status: File.fieldStatuses.removed,
+        });
+      } else if (file1[key] === file2[key]) {
+        fields.push({
+          key,
+          value: typeof file1[key] === 'object'
+            ? File.compare(file1[key], file1[key]) : file1[key],
+          status: File.fieldStatuses.unchanged,
+        });
+      } else if (typeof file1[key] === 'object' && typeof file2[key] === 'object') {
+        fields.push({
+          key,
+          value: File.compare(file1[key], file2[key]),
+          status: File.fieldStatuses.unchanged,
+        });
+      } else {
+        fields.push({
+          key,
+          value: file2[key] && typeof file2[key] === 'object'
+            ? File.compare(file2[key], file2[key]) : file2[key],
+          oldValue: file1[key] && typeof file1[key] === 'object'
+            ? File.compare(file1[key], file1[key]) : file1[key],
+          status: File.fieldStatuses.changed,
+        });
+      }
+    });
+
+    Object.keys(file2).forEach((key) => {
+      if (file1[key] === undefined) {
+        fields.push({
+          key,
+          value: typeof file2[key] === 'object'
+            ? File.compare(file2[key], file2[key]) : file2[key],
+          status: File.fieldStatuses.added,
+        });
+      }
+    });
+
+    const sortedFields = _.sortBy(fields, ['key']);
+    return sortedFields.reduce((acc, field) => {
+      switch (field.status) {
+        case File.fieldStatuses.added:
+          acc[`+ ${field.key}`] = field.value;
+          break;
+        case File.fieldStatuses.removed:
+          acc[`- ${field.key}`] = field.value;
+          break;
+        case File.fieldStatuses.unchanged:
+          acc[`  ${field.key}`] = field.value;
+          break;
+        case File.fieldStatuses.changed:
+          acc[`- ${field.key}`] = field.oldValue;
+          acc[`+ ${field.key}`] = field.value;
+          break;
+        default:
+          break;
+      }
+
+      return acc;
+    }, {});
+  }
+
+  name;
+
+  format;
+
+  file;
 
   constructor(name) {
     this.name = isAbsolute(name) ? name : resolve(cwd(), name);
@@ -38,66 +109,6 @@ class File {
     }
 
     return this;
-  }
-
-  compareTo(file) {
-    const fields = [];
-
-    Object.keys(this.file).forEach((key) => {
-      if (!file[key]) {
-        fields.push({
-          key,
-          value: this.file[key],
-          status: this.fieldStatuses.removed,
-        });
-      } else if (this.file[key] === file[key]) {
-        fields.push({
-          key,
-          value: this.file[key],
-          status: this.fieldStatuses.unchanged,
-        });
-      } else {
-        fields.push({
-          key,
-          value: file[key],
-          oldValue: this.file[key],
-          status: this.fieldStatuses.changed,
-        });
-      }
-    });
-
-    Object.keys(file).forEach((key) => {
-      if (!this.file[key]) {
-        fields.push({
-          key,
-          value: file[key],
-          status: this.fieldStatuses.added,
-        });
-      }
-    });
-
-    const sortedFields = _.sortBy(fields, ['key']);
-    return sortedFields.reduce((acc, field) => {
-      switch (field.status) {
-        case this.fieldStatuses.added:
-          acc[`+ ${field.key}`] = field.value;
-          break;
-        case this.fieldStatuses.removed:
-          acc[`- ${field.key}`] = field.value;
-          break;
-        case this.fieldStatuses.unchanged:
-          acc[`  ${field.key}`] = field.value;
-          break;
-        case this.fieldStatuses.changed:
-          acc[`- ${field.key}`] = field.oldValue;
-          acc[`+ ${field.key}`] = field.value;
-          break;
-        default:
-          break;
-      }
-
-      return acc;
-    }, {});
   }
 }
 
