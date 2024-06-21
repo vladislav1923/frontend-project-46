@@ -1,5 +1,5 @@
-import program from './src/cli/programm.js';
-import getDiff from './src/utils/get-diff.js';
+import program from './src/cli/index.js';
+import getDiff from './src/api/index.js';
 
 export { getDiff };
 export default program;

@@ -6,3 +6,6 @@
 
 ### Test Coverage
 [![Test Coverage](https://api.codeclimate.com/v1/badges/3b782b5f68a18748d2a1/test_coverage)](https://codeclimate.com/github/vladislav1923/frontend-project-46/test_coverage)
+
+### Project in Use
+[![asciicast](https://asciinema.org/a/xRKJ52zowiYHmHxj1qmCNKMfW.svg)](https://asciinema.org/a/xRKJ52zowiYHmHxj1qmCNKMfW)

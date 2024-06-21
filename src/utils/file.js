@@ -1,8 +1,8 @@
 import { cwd } from 'node:process';
 import { isAbsolute, resolve } from 'node:path';
 import { readFileSync } from 'node:fs';
-import _ from 'lodash';
 import { yamlParser, jsonParser } from './parcers.js';
+import {stylish} from "./formaters.js";
 
 class File {
   static fieldStatuses = {
@@ -12,7 +12,7 @@ class File {
     changed: 'changed',
   };
 
-  static compare(file1, file2) {
+  static compare(file1, file2, format = 'stylish') {
     const fields = [];
 
     Object.keys(file1).forEach((key) => {
@@ -59,28 +59,12 @@ class File {
       }
     });
 
-    const sortedFields = _.sortBy(fields, ['key']);
-    return sortedFields.reduce((acc, field) => {
-      switch (field.status) {
-        case File.fieldStatuses.added:
-          acc[`+ ${field.key}`] = field.value;
-          break;
-        case File.fieldStatuses.removed:
-          acc[`- ${field.key}`] = field.value;
-          break;
-        case File.fieldStatuses.unchanged:
-          acc[`  ${field.key}`] = field.value;
-          break;
-        case File.fieldStatuses.changed:
-          acc[`- ${field.key}`] = field.oldValue;
-          acc[`+ ${field.key}`] = field.value;
-          break;
-        default:
-          break;
-      }
-
-      return acc;
-    }, {});
+    switch (format) {
+      case 'stylish':
+        return stylish(fields);
+      default:
+        throw new Error(`Unsupported output format: ${format}`);
+    }
   }
 
   name;
