@@ -2,7 +2,7 @@ import { cwd } from 'node:process';
 import { isAbsolute, resolve } from 'node:path';
 import { readFileSync } from 'node:fs';
 import { yamlParser, jsonParser } from './parcers.js';
-import {stylish} from "./formaters.js";
+import stylish from './formaters.js';
 
 class File {
   static fieldStatuses = {

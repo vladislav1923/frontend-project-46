@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@jest/globals';
-import getDiff from '../src/utils/get-diff.js';
+import getDiff from '../src/api/index.js';
 
 const EXPECTED_RESULT = JSON.stringify({
   '  common': {
