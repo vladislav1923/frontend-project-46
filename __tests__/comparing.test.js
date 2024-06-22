@@ -1,104 +1,19 @@
 import { describe, expect, it } from '@jest/globals';
 import getDiff from '../src/api/index.js';
+import {
+  STYLISH_EXPECTED_RESULT,
+  STYLISH_EXPECTED_OPPOSITE_RESULT,
+} from './__fixtures__/stylish-results.js';
+import { PLAIN_EXPECTED_OPPOSITE_RESULT, PLAIN_EXPECTED_RESULT } from './__fixtures__/plain-results.js';
 
-const EXPECTED_RESULT = JSON.stringify({
-  '  common': {
-    '+ follow': false,
-    '  setting1': 'Value 1',
-    '- setting2': 200,
-    '- setting3': true,
-    '+ setting3': null,
-    '+ setting4': 'blah blah',
-    '+ setting5': {
-      '  key5': 'value5',
-    },
-    '  setting6': {
-      '  doge': {
-        '- wow': '',
-        '+ wow': 'so much',
-      },
-      '  key': 'value',
-      '+ ops': 'vops',
-    },
-  },
-  '  group1': {
-    '- baz': 'bas',
-    '+ baz': 'bars',
-    '  foo': 'bar',
-    '- nest': {
-      '  key': 'value',
-    },
-    '+ nest': 'str',
-  },
-  '- group2': {
-    '  abc': 12345,
-    '  deep': {
-      '  id': 45,
-    },
-  },
-  '+ group3': {
-    '  deep': {
-      '  id': {
-        '  number': 45,
-      },
-    },
-    '  fee': 100500,
-  },
-});
-
-const EXPECTED_OPPOSITE_RESULT = JSON.stringify({
-  '  common': {
-    '- follow': false,
-    '  setting1': 'Value 1',
-    '+ setting2': 200,
-    '- setting3': null,
-    '+ setting3': true,
-    '- setting4': 'blah blah',
-    '- setting5': {
-      '  key5': 'value5',
-    },
-    '  setting6': {
-      '  doge': {
-        '- wow': 'so much',
-        '+ wow': '',
-      },
-      '  key': 'value',
-      '- ops': 'vops',
-    },
-  },
-  '  group1': {
-    '- baz': 'bars',
-    '+ baz': 'bas',
-    '  foo': 'bar',
-    '- nest': 'str',
-    '+ nest': {
-      '  key': 'value',
-    },
-  },
-  '+ group2': {
-    '  abc': 12345,
-    '  deep': {
-      '  id': 45,
-    },
-  },
-  '- group3': {
-    '  deep': {
-      '  id': {
-        '  number': 45,
-      },
-    },
-    '  fee': 100500,
-  },
-});
-
-describe('Files comparing', () => {
+describe('Stylish Diff Format', () => {
   it('should compare two json files', () => {
     const result = getDiff(
       '__tests__/__fixtures__/file1.json',
       '__tests__/__fixtures__/file2.json',
     );
 
-    expect(result).toBe(EXPECTED_RESULT);
+    expect(result).toEqual(STYLISH_EXPECTED_RESULT);
   });
 
   it('should compare two json files (opposition)', () => {
@@ -107,7 +22,7 @@ describe('Files comparing', () => {
       '__tests__/__fixtures__/file1.json',
     );
 
-    expect(result).toBe(EXPECTED_OPPOSITE_RESULT);
+    expect(result).toEqual(STYLISH_EXPECTED_OPPOSITE_RESULT);
   });
 
   it('should compare two yaml files', () => {
@@ -116,7 +31,7 @@ describe('Files comparing', () => {
       '__tests__/__fixtures__/file2.yml',
     );
 
-    expect(result).toBe(EXPECTED_RESULT);
+    expect(result).toEqual(STYLISH_EXPECTED_RESULT);
   });
 
   it('should compare two yaml files (opposition)', () => {
@@ -125,7 +40,7 @@ describe('Files comparing', () => {
       '__tests__/__fixtures__/file1.yaml',
     );
 
-    expect(result).toBe(EXPECTED_OPPOSITE_RESULT);
+    expect(result).toEqual(STYLISH_EXPECTED_OPPOSITE_RESULT);
   });
 
   it('should compare json to yaml files', () => {
@@ -134,7 +49,7 @@ describe('Files comparing', () => {
       '__tests__/__fixtures__/file2.yml',
     );
 
-    expect(result).toBe(EXPECTED_RESULT);
+    expect(result).toEqual(STYLISH_EXPECTED_RESULT);
   });
 
   it('should compare yml to json files', () => {
@@ -143,6 +58,42 @@ describe('Files comparing', () => {
       '__tests__/__fixtures__/file2.json',
     );
 
-    expect(result).toBe(EXPECTED_RESULT);
+    expect(result).toEqual(STYLISH_EXPECTED_RESULT);
+  });
+});
+
+describe('Plain Diff format', () => {
+  it('should compare two json files', () => {
+    const result = getDiff(
+      '__tests__/__fixtures__/file1.json',
+      '__tests__/__fixtures__/file2.json',
+      'plain',
+    );
+
+    expect(result).toBe(PLAIN_EXPECTED_RESULT);
+  });
+
+  it('should compare two yaml files', () => {
+    const result = getDiff(
+      '__tests__/__fixtures__/file2.yml',
+      '__tests__/__fixtures__/file1.yaml',
+      'plain',
+    );
+
+    expect(result).toBe(PLAIN_EXPECTED_OPPOSITE_RESULT);
+  });
+});
+
+describe('Unknown Diff format', () => {
+  it('should throw an error', () => {
+    try {
+      getDiff(
+        '__tests__/__fixtures__/file1.json',
+        '__tests__/__fixtures__/file2.json',
+        'plant',
+      );
+    } catch (error) {
+      expect(error.message).toBe('Unsupported output format: plant');
+    }
   });
 });

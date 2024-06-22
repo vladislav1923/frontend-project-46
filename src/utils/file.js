@@ -2,17 +2,12 @@ import { cwd } from 'node:process';
 import { isAbsolute, resolve } from 'node:path';
 import { readFileSync } from 'node:fs';
 import { yamlParser, jsonParser } from './parcers.js';
-import stylish from './formaters.js';
+import getFormatter from './formatters/index.js';
 import comparator from './comparator.js';
 
 class File {
-  static compare(file1, file2, format = 'stylish') {
-    switch (format) {
-      case 'stylish':
-        return stylish(comparator(file1, file2));
-      default:
-        throw new Error(`Unsupported output format: ${format}`);
-    }
+  static compare(file1, file2, format) {
+    return getFormatter(format)(comparator(file1, file2));
   }
 
   name;

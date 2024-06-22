@@ -1,7 +1,9 @@
 import _ from 'lodash';
-import { statuses } from './comparator.js';
+import { statuses } from '../comparator.js';
 
-const stylish = (fields) => _.sortBy(fields, ['key']).reduce((acc, { key, value, status, oldValue }) => {
+const stylish = (fields) => _.sortBy(fields, ['key']).reduce((acc, {
+  key, value, status, oldValue,
+}) => {
   switch (status) {
     case statuses.added:
       acc[`+ ${key}`] = value && typeof value === 'object' ? stylish(value) : value;
@@ -22,9 +24,5 @@ const stylish = (fields) => _.sortBy(fields, ['key']).reduce((acc, { key, value,
 
   return acc;
 }, {});
-
-export const plain = (fields) => {
-  const sorted = _.sortBy(fields, ['key'])
-};
 
 export default stylish;

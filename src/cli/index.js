@@ -11,7 +11,7 @@ program
 program
   .arguments('<filepath1> <filepath2>')
   .action((filepath1, filepath2, { format }) => {
-    console.log(JSON.parse(getDiff(filepath1, filepath2, format)));
+    console.log(getDiff(filepath1, filepath2, format));
   });
 
 program.parse();
