@@ -88,9 +88,9 @@ describe('Edge cases', () => {
   it('should throw an error if an input format is unsupported', () => {
     try {
       getDiff(
-          '__tests__/__fixtures__/file1.json',
-          '__tests__/__fixtures__/file.txt',
-          'plant',
+        '__tests__/__fixtures__/file1.json',
+        '__tests__/__fixtures__/file.txt',
+        'plant',
       );
     } catch (error) {
       expect(error.message).toBe('Unsupported input format: txt');
