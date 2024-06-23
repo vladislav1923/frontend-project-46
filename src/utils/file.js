@@ -1,7 +1,7 @@
 import { cwd } from 'node:process';
 import { isAbsolute, resolve } from 'node:path';
 import { readFileSync } from 'node:fs';
-import { yamlParser, jsonParser } from './parcers.js';
+import getParser from './parsers/index.js';
 import getFormatter from './formatters/index.js';
 import comparator from './comparator.js';
 
@@ -23,18 +23,7 @@ class File {
 
   parse() {
     const file = readFileSync(this.name, 'utf-8');
-    switch (this.format) {
-      case 'json':
-        this.file = jsonParser(file);
-        break;
-      case 'yml':
-      case 'yaml':
-        this.file = yamlParser(file);
-        break;
-      default:
-        throw new Error(`Unsupported file format: ${this.format}`);
-    }
-
+    this.file = getParser(this.format)(file);
     return this;
   }
 }

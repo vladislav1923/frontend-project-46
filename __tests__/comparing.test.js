@@ -84,8 +84,20 @@ describe('Plain Diff format', () => {
   });
 });
 
-describe('Unknown Diff format', () => {
-  it('should throw an error', () => {
+describe('Edge cases', () => {
+  it('should throw an error if an input format is unsupported', () => {
+    try {
+      getDiff(
+          '__tests__/__fixtures__/file1.json',
+          '__tests__/__fixtures__/file.txt',
+          'plant',
+      );
+    } catch (error) {
+      expect(error.message).toBe('Unsupported input format: txt');
+    }
+  });
+
+  it('should throw an error if an output format is unsupported', () => {
     try {
       getDiff(
         '__tests__/__fixtures__/file1.json',
