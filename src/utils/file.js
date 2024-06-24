@@ -22,7 +22,12 @@ class File {
   }
 
   parse() {
-    const file = readFileSync(this.name, 'utf-8');
+    let file;
+    try {
+      file = readFileSync(this.name, 'utf-8');
+    } catch {
+      throw new Error('File is not found');
+    }
     this.file = getParser(this.format)(file);
     return this;
   }
