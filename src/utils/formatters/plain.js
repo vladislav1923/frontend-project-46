@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { statuses } from '../comparator.js';
 
 const formatValue = (value) => {
@@ -5,11 +6,11 @@ const formatValue = (value) => {
     return `'${value}'`;
   }
 
-  return value && typeof value === 'object' ? '[complex value]' : value;
+  return _.isObject(value) ? '[complex value]' : value;
 };
 
 const inner = (node, trail = []) => {
-  trail.push(node.key);
+  trail = [...trail, node.key];
   if (node.status === statuses.unchanged && Array.isArray(node.value)) {
     return node.value.map((subnode) => inner(subnode, [...trail]));
   }
@@ -28,11 +29,15 @@ const inner = (node, trail = []) => {
   }
 };
 
-const plain = (fields) => fields
-  .map((field) => inner(field))
-  .flat(Infinity)
-  .filter((log) => Boolean(log))
-  .sort()
-  .join('\n');
+const plain = (fields) => {
+  const lines = fields
+      .map((field) => inner(field))
+      .flat(Infinity)
+      .filter((log) => Boolean(log)));
+
+  const sorted = _.sortBy(lines);
+
+  return sorted.join('\n');
+}
 
 export default plain;

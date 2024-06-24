@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 export const statuses = {
   added: 'added',
   removed: 'removed',
@@ -6,40 +8,36 @@ export const statuses = {
 };
 
 const comparator = (a, b) => {
-  const fields = [];
+  let fields = [];
 
   Object.entries(a).forEach(([key, value]) => {
     const bValue = b[key];
 
     if (bValue === undefined) {
-      fields.push({
+      fields = [...fields, {
         key,
-        value: value && typeof value === 'object'
-          ? comparator(value, value) : value,
+        value: _.isObject(value) ? comparator(value, value) : value,
         status: statuses.removed,
-      });
+      }];
     } else if (value === bValue) {
-      fields.push({
+      fields = [...fields, {
         key,
-        value: value && typeof value === 'object'
-          ? comparator(value, value) : value,
+        value: _.isObject(value) ? comparator(value, value) : value,
         status: statuses.unchanged,
-      });
-    } else if (typeof value === 'object' && typeof bValue === 'object') {
-      fields.push({
+      }];
+    } else if (_.isObject(value) && _.isObject(bValue)) {
+      fields = [...fields, {
         key,
         value: comparator(value, bValue),
         status: statuses.unchanged,
-      });
+      }];
     } else {
-      fields.push({
+      fields = [...fields, {
         key,
-        value: bValue && typeof bValue === 'object'
-          ? comparator(bValue, bValue) : bValue,
-        oldValue: value && typeof value === 'object'
-          ? comparator(value, value) : value,
+        value: _.isObject(bValue) ? comparator(bValue, bValue) : bValue,
+        oldValue: _.isObject(value) ? comparator(value, value) : value,
         status: statuses.changed,
-      });
+      }];
     }
   });
 
@@ -47,12 +45,11 @@ const comparator = (a, b) => {
     const aValue = a[key];
 
     if (aValue === undefined) {
-      fields.push({
+      fields = [...fields, {
         key,
-        value: value && typeof value === 'object'
-          ? comparator(value, value) : value,
+        value: _.isObject(value) ? comparator(value, value) : value,
         status: statuses.added,
-      });
+      }];
     }
   });
 

@@ -21,13 +21,13 @@ const inner = ({
   const newDepth = depth + 1;
 
   const valueFormatter = (v, offset) => {
-    if (Array.isArray(v)) {
+    if (_.isArray(v)) {
       const sortedValues = _.sortBy(v, ['key']);
       const children = sortedValues.map((node) => inner(node, newDepth)).join('');
       return `{${children}\n${offset}}`;
     }
 
-    if (v && typeof v === 'object') {
+    if (_.isObject(v)) {
       const child = inner(v, newDepth);
       return `{${child}\n${offset}}`;
     }
