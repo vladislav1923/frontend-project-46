@@ -8,52 +8,60 @@ export const statuses = {
 };
 
 const comparator = (a, b) => {
-  let fields = [];
+  const aEntries = Object.entries(a) ?? [];
+  const bEntries = Object.entries(b) ?? [];
 
-  Object.entries(a).forEach(([key, value]) => {
+  const abDiff = aEntries.reduce((acc, [key, value]) => {
     const bValue = b[key];
 
     if (bValue === undefined) {
-      fields = [...fields, {
+       const field = {
         key,
         value: _.isObject(value) ? comparator(value, value) : value,
         status: statuses.removed,
-      }];
+      };
+      return [...acc, field];
     } else if (value === bValue) {
-      fields = [...fields, {
+      const field = {
         key,
         value: _.isObject(value) ? comparator(value, value) : value,
         status: statuses.unchanged,
-      }];
+      };
+      return [...acc, field];
     } else if (_.isObject(value) && _.isObject(bValue)) {
-      fields = [...fields, {
+      const field = {
         key,
         value: comparator(value, bValue),
         status: statuses.unchanged,
-      }];
+      };
+      return [...acc, field];
     } else {
-      fields = [...fields, {
+      const field = {
         key,
         value: _.isObject(bValue) ? comparator(bValue, bValue) : bValue,
         oldValue: _.isObject(value) ? comparator(value, value) : value,
         status: statuses.changed,
-      }];
+      };
+      return [...acc, field];
     }
-  });
+    }, []);
 
-  Object.entries(b).forEach(([key, value]) => {
+  const baDiff = bEntries.reduce((acc, [key, value]) => {
     const aValue = a[key];
 
     if (aValue === undefined) {
-      fields = [...fields, {
+      const field = {
         key,
         value: _.isObject(value) ? comparator(value, value) : value,
         status: statuses.added,
-      }];
+      };
+      return [...acc, field];
     }
-  });
 
-  return fields;
+    return acc;
+  }, []);
+
+  return [...abDiff, ...baDiff];
 };
 
 export default comparator;

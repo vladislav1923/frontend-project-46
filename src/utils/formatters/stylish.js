@@ -35,18 +35,15 @@ const inner = ({
     return v;
   };
 
-  let result = '';
   const openOffset = getOpenOffset(newDepth, status);
   const closeOffset = getCloseOffset(newDepth);
 
   if (oldValue !== undefined) {
-    const newOpenOffset = getOpenOffset(newDepth, statuses.removed);
-    result += `\n${newOpenOffset}${key}: ${valueFormatter(oldValue, closeOffset)}`;
+    const oldOpenOffset = getOpenOffset(newDepth, statuses.removed);
+    return `\n${oldOpenOffset}${key}: ${valueFormatter(oldValue, closeOffset)}\n${openOffset}${key}: ${valueFormatter(value, closeOffset)}`;
   }
 
-  result += `\n${openOffset}${key}: ${valueFormatter(value, closeOffset)}`;
-
-  return result;
+  return `\n${openOffset}${key}: ${valueFormatter(value, closeOffset)}`;
 };
 
 const stylish = (fields) => {

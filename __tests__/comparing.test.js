@@ -86,45 +86,29 @@ describe('Plain Diff format', () => {
 
 describe('Edge cases', () => {
   it('should throw an error if an input format is unsupported', () => {
-    let errorMessage = '';
-    try {
-      getDiff(
+    const fn = () => getDiff(
         '__tests__/__fixtures__/file1.json',
         '__tests__/__fixtures__/file.txt',
-      );
-    } catch (error) {
-      errorMessage = error.message;
-    }
+    );
 
-    expect(errorMessage).toBe('Unsupported input format: txt');
+    expect(fn).toThrow(new Error('Unsupported input format: txt'));
   });
 
   it('should throw an error if an output format is unsupported', () => {
-    let errorMessage = '';
-    try {
-      getDiff(
+    const fn = () => getDiff(
         '__tests__/__fixtures__/file1.json',
         '__tests__/__fixtures__/file2.json',
         'plant',
-      );
-    } catch (error) {
-      errorMessage = error.message;
-    }
+    );
 
-    expect(errorMessage).toBe('Unsupported output format: plant');
+    expect(fn).toThrow(new Error('Unsupported output format: plant'));
   });
 
   it('should throw an error if a file is not found', () => {
-    let errorMessage = '';
-    try {
-      getDiff(
+    const fn = () => getDiff(
         '__tests__/__fixtures__/file1.json',
         '__tests__/__fixtures__/non-existent-file.json',
-      );
-    } catch (error) {
-      errorMessage = error.message;
-    }
-
-    expect(errorMessage).toBe('File is not found');
+    )
+    expect(fn).toThrow(new Error('File is not found'));
   });
 });
