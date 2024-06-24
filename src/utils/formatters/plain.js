@@ -33,7 +33,7 @@ const plain = (fields) => {
   const lines = fields
       .map((field) => inner(field))
       .flat(Infinity)
-      .filter((log) => Boolean(log)));
+      .filter((log) => Boolean(log));
 
   const sorted = _.sortBy(lines);
 
