@@ -1,4 +1,4 @@
-import File from '../utils/file.js';
+import File from '../utils/File.js';
 
 const getDiff = (filepath1, filepath2, format) => File.compare(
   new File(filepath1).parse().file,
