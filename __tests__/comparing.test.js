@@ -87,8 +87,8 @@ describe('Plain Diff format', () => {
 describe('Edge cases', () => {
   it('should throw an error if an input format is unsupported', () => {
     const fn = () => getDiff(
-        '__tests__/__fixtures__/file1.json',
-        '__tests__/__fixtures__/file.txt',
+      '__tests__/__fixtures__/file1.json',
+      '__tests__/__fixtures__/file.txt',
     );
 
     expect(fn).toThrow(new Error('Unsupported input format: txt'));
@@ -96,9 +96,9 @@ describe('Edge cases', () => {
 
   it('should throw an error if an output format is unsupported', () => {
     const fn = () => getDiff(
-        '__tests__/__fixtures__/file1.json',
-        '__tests__/__fixtures__/file2.json',
-        'plant',
+      '__tests__/__fixtures__/file1.json',
+      '__tests__/__fixtures__/file2.json',
+      'plant',
     );
 
     expect(fn).toThrow(new Error('Unsupported output format: plant'));
@@ -106,9 +106,9 @@ describe('Edge cases', () => {
 
   it('should throw an error if a file is not found', () => {
     const fn = () => getDiff(
-        '__tests__/__fixtures__/file1.json',
-        '__tests__/__fixtures__/non-existent-file.json',
-    )
+      '__tests__/__fixtures__/file1.json',
+      '__tests__/__fixtures__/non-existent-file.json',
+    );
     expect(fn).toThrow(new Error('File is not found'));
   });
 });

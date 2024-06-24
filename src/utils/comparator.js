@@ -15,36 +15,35 @@ const comparator = (a, b) => {
     const bValue = b[key];
 
     if (bValue === undefined) {
-       const field = {
+      const field = {
         key,
         value: _.isObject(value) ? comparator(value, value) : value,
         status: statuses.removed,
       };
       return [...acc, field];
-    } else if (value === bValue) {
+    } if (value === bValue) {
       const field = {
         key,
         value: _.isObject(value) ? comparator(value, value) : value,
         status: statuses.unchanged,
       };
       return [...acc, field];
-    } else if (_.isObject(value) && _.isObject(bValue)) {
+    } if (_.isObject(value) && _.isObject(bValue)) {
       const field = {
         key,
         value: comparator(value, bValue),
         status: statuses.unchanged,
       };
       return [...acc, field];
-    } else {
-      const field = {
-        key,
-        value: _.isObject(bValue) ? comparator(bValue, bValue) : bValue,
-        oldValue: _.isObject(value) ? comparator(value, value) : value,
-        status: statuses.changed,
-      };
-      return [...acc, field];
     }
-    }, []);
+    const field = {
+      key,
+      value: _.isObject(bValue) ? comparator(bValue, bValue) : bValue,
+      oldValue: _.isObject(value) ? comparator(value, value) : value,
+      status: statuses.changed,
+    };
+    return [...acc, field];
+  }, []);
 
   const baDiff = bEntries.reduce((acc, [key, value]) => {
     const aValue = a[key];
