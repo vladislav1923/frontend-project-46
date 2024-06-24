@@ -10,12 +10,12 @@ const formatValue = (value) => {
 };
 
 const inner = (node, trail = []) => {
-  trail = [...trail, node.key];
+  const newTrail = [...trail, node.key];
   if (node.status === statuses.unchanged && Array.isArray(node.value)) {
-    return node.value.map((subnode) => inner(subnode, [...trail]));
+    return node.value.map((subnode) => inner(subnode, [...newTrail]));
   }
 
-  const path = trail.join('.');
+  const path = newTrail.join('.');
 
   switch (node.status) {
     case statuses.added:
@@ -31,13 +31,13 @@ const inner = (node, trail = []) => {
 
 const plain = (fields) => {
   const lines = fields
-      .map((field) => inner(field))
-      .flat(Infinity)
-      .filter((log) => Boolean(log));
+    .map((field) => inner(field))
+    .flat(Infinity)
+    .filter((log) => Boolean(log));
 
   const sorted = _.sortBy(lines);
 
   return sorted.join('\n');
-}
+};
 
 export default plain;
